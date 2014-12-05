@@ -1,5 +1,5 @@
 <?php
-namespace \JsLog;
+namespace JsLog;
 
 class Options {
     public $enabled;

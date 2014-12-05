@@ -1,5 +1,5 @@
 <?php
-namespace \JsLog;
+namespace JsLog;
 
 class Logger {
 
@@ -11,6 +11,10 @@ class Logger {
     public function __construct($options) {
         $this->options = new Options($options);
         $this->systemInfoSent = false;
+        if (!extension_loaded('curl')) {
+            error_log('JsLog: ERROR - curl extension is not installed');
+            $this->options->enabled = false;
+        }
         $this->init();
     }
 
@@ -39,8 +43,8 @@ class Logger {
     }
 
     public function logUncaughtExceptions() {
-        set_error_handler(array($this, 'jslogErrorHandler'));
-        set_exception_handler(array($this, 'jslogExceptionHandler'));
+        set_error_handler(array($this, 'errorHandler'));
+        set_exception_handler(array($this, 'exceptionHandler'));
     }
 
     public function errorHandler($errno , $errstr, $errfile, $errline, $errcontext) {
@@ -53,7 +57,7 @@ class Logger {
         $this->sendToServer($this->options->key, 'uncaughtException', $errorObject);
     }
 
-    public function exceptionHandler(Exception $e){
+    public function exceptionHandler(\Exception $e){
         $this->sendToServer($this->options->key, 'exception', $e);
     }
 
@@ -66,7 +70,7 @@ class Logger {
         $rawData = array(
             'key' => $key,
             'sessionId' => $this->options->sessionId,
-            'hostId' => $_SERVER['REMOTE_ADDR'],
+            'hostId' => isset($_SERVER['REMOTE_ADDR'])?$_SERVER['REMOTE_ADDR']:'',
             'time' => $this->getEpochTime(),
             'type' => $eventType,
             'data' => $data
@@ -99,10 +103,10 @@ class Logger {
             'version' => $this->options->version,
             'userAgent' => '',
             'platform' => '',
-            'ip' => $_SERVER['REMOTE_ADDR']
+            'ip' => isset($_SERVER['REMOTE_ADDR'])?$_SERVER['REMOTE_ADDR']:''
         );
         if ($collectSystemInfo) {
-            $systemInfoData['userAgent'] = $_SERVER['HTTP_USER_AGENT'];
+            $systemInfoData['userAgent'] = isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'';
         }
         $this->systemInfoSent = true;
         $this->sendToServer($this->options->key, 'systemInfo', $systemInfoData);
@@ -113,7 +117,7 @@ class Logger {
             if (!$this->options->enabled)  return;
             $this->initialSystemInfo();
             $this->sendToServer($this->options->key, 'log', $message);
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
         }
     }
 
@@ -122,7 +126,7 @@ class Logger {
             if (!$this->options->enabled)  return;
             $this->initialSystemInfo();
             $this->sendToServer($this->options->key, 'info', $message);
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
         }
     }
 
@@ -131,7 +135,7 @@ class Logger {
             if (!$this->options->enabled)  return;
             $this->initialSystemInfo();
             $this->sendToServer($this->options->key, 'warn', $message);
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
         }
     }
 
@@ -140,7 +144,7 @@ class Logger {
             if (!$this->options->enabled)  return;
             $this->initialSystemInfo();
             $this->sendToServer($this->options->key, 'error', $message);
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
         }
     }
 
@@ -149,7 +153,7 @@ class Logger {
             if (!$this->options->enabled)  return;
             $this->initialSystemInfo();
             $this->sendToServer($this->options->key, 'exception', $message);
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
         }
     }
 

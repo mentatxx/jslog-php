@@ -9,8 +9,8 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "JsLog_": ""
+        "psr-4": {
+            "JsLog\\": "JsLog/"
         }
     },
     "require": {}
