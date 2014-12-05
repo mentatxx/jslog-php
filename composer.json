@@ -1,0 +1,17 @@
+{
+    "name": "mentatxx/jslog-php",
+    "description": "Error logger for PHP",
+    "license": "Apache 2.0",
+    "authors": [
+        {
+            "name": "Alexey Petushkov",
+            "email": "mentatxx@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "JsLog_": ""
+        }
+    },
+    "require": {}
+}
