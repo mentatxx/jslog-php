@@ -2,6 +2,8 @@
     "name": "mentatxx/jslog-php",
     "description": "Error logger for PHP",
     "license": "Apache 2.0",
+    "keywords": ["logging", "errors", "events"],
+    "homepage": "https://github.com/mentatxx/jslog-php",
     "authors": [
         {
             "name": "Alexey Petushkov",
@@ -13,5 +15,8 @@
             "JsLog\\": "JsLog/"
         }
     },
-    "require": {}
+    "require": {},
+    "support": {
+        "email": "support@jslog.me"
+    }
 }
